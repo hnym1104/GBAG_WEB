@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <title>5G mmWave Path Loss Modeling</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&display=swap"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/vendor/aos/aos.css" rel="stylesheet">
+    <link href="/static/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="/static/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+    <!-- Variables CSS Files. Uncomment your preferred color scheme -->
+    <link href="/static/css/variables.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="/static/css/main.css" rel="stylesheet">
+
+    <!-- =======================================================
+    * Template Name: HeroBiz - v2.1.0
+    * Template URL: https://bootstrapmade.com/herobiz-bootstrap-business-template/
+    * Author: BootstrapMade.com
+    * License: https://bootstrapmade.com/license/
+    ======================================================== -->
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top" data-scrollto-offset="0">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+
+            <a href="{% url 'home' %}"  class="logo d-flex align-items-center scrollto me-auto me-lg-0">
+                <!-- Uncomment the line below if you also wish to use an image logo -->
+                <!-- <img src="static/img/logo.png" alt=""> -->
+                <h1>5GmmWave Path Loss Modeling<span>.</span></h1>
+            </a>
+            <div style="margin-right: 100px;">
+                <nav id="navbar" class="navbar">
+                    <ul>
+                        <li><a class="nav-link scrollto" href="{% url 'introduction' %}" style="font-size: 28px;">Introduction</a>
+                        </li>
+                        <li><a class="nav-link scrollto" href="{% url 'predict' %}"
+                               style="font-size: 28px;">Prediction</a></li>
+                        <li><a class="nav-link scrollto" href="{% url 'result' %}" style="font-size: 28px;">Result</a>
+                        </li>
+                    </ul>
+                    <i class="bi bi-list mobile-nav-toggle d-none"></i>
+                </nav><!-- .navbar -->
+            </div>
+        </div>
+    </header><!-- End Header -->
+    <style>
+    
+      div.box{
+          width: 100%;
+          height: 650px;
+          border: 1px solid #000;
+          margin: 0 auto;
+      }
+      .left {
+          width: 60%;
+          height:650px;
+          float: left;
+          box-sizing: border-box;
+          text-align: center;
+          padding: 20px;
+          
+      }
+      .right {
+          width: 40%;
+          height: 450px;
+          float: right;
+          box-sizing: border-box;
+          padding:20px;
+      }
+
+
+    </style>
+</head>
+
+<body>
+<div class="container" data-aos="fade-up" style="margin:50px; margin: auto; margin-top: 40px;">
+
+    <div class="section-header">
+        <br><br><br><br>
+        <h2 style="font-weight: bold;">Prediction</h2>
+
+    </div>
+    <div class="box" style="margin:auto; text-align:center; ">
+        <div class="left">
+            <img src="/static/img/map_pci_img.png" alt="My Image" width="650" height="600">
+
+        </div>
+        <div class="right" style="padding-left:10%;padding-right:10%; margin: 0 auto;">
+            <form action="{% url 'result' %}" method="POST">
+                <br><br>
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="exampleSelect1" class="form-label mt-4">PCI Select</label>
+                    <select name="pci" class="form-select" id="exampleSelect1" onchange="selectchange()">
+                        <option value="1">PCI 1</option>
+                        <option value="2">PCI 2</option>
+                        <option value="3">PCI 3</option>
+                        <option value="4">PCI 4</option>
+                        <option value="5">PCI 5</option>
+                        <option value="6">PCI 6</option>
+                        <option value="7">PCI 7</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label mt-4" for="inputDefault">AZIMUTH</label>
+                    <p id="disazi">161~191</p>
+                    <input name="azi" type="text" class="form-control inputazi" placeholder="Enter AZIMUTH"
+                           id="inputDefault">
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label mt-4" for="inputDefault inputdown">DOWNTILT</label>
+                    <p id="disdown">11~23</p>
+                    <input name="down" type="text" class="form-control" placeholder="Enter DOWNTILT"
+                           id="inputDefault">
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+<div id="preloader"></div>
+
+<!-- Vendor JS Files -->
+<script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/static/vendor/aos/aos.js"></script>
+<script src="/static/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="/static/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+<script src="/static/vendor/swiper/swiper-bundle.min.js"></script>
+<script src="/static/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="/static/js/main.js"></script>
+<script>
+    var Sel=document.getElementById("exampleSelect1");
+    var sub=document.getElementsByClassName("form-group");
+
+     $(document).ready(function(){
+      $('.inputazi, .inputdown').change(function(){
+        var Val=Sel.options[Sel.selectedIndex].value;
+        var inputazi=$('.inputazi').val();
+        var inputdown=$('.inputdown').val();
+        if (Val=='1'){
+          if(inputazi<161||inputazi>191){
+            alert("범위에 벗어나는 값을 입력하셨습니다");
+            $('.inputazi').val("");
+          }
+          else if(inputdown<11||inputdown>23){
+            alert("범위에 벗어나는 값을 입력하셨습니다");
+            $('.inputdown').val("");
+          }
+        }
+        else if (Val=='2'){
+          if(inputazi<60||inputazi>90){
+            alert("범위에 벗어나는 값을 입력하셨습니다");
+            $('.inputazi').val("");
+          }
+          else if(inputdown<10||inputdown>22){
+            alert("범위에 벗어나는 값을 입력하셨습니다");
+            $('.inputdown').val("");
+          }
+        }
+        else if (Val=='3'){
+          if(inputazi<198||inputazi>1228){
+            alert("범위에 벗어나는 값을 입력하셨습니다");
+            $('.inputazi').val("");
+          }
+          else if(inputdown<10||inputdown>22){
+            alert("범위에 벗어나는 값을 입력하셨습니다");
+            $('.inputdown').val("");
+          }
+        }
+        else if (Val=='4'){
+          if(inputazi<103||inputazi>133){
+            alert("범위에 벗어나는 값을 입력하셨습니다");
+            $('.inputazi').val("");
+          }
+          else if(inputdown<12||inputdown>24){
+            alert("범위에 벗어나는 값을 입력하셨습니다");
+            $('.inputdown').val("");
+          }
+        }
+        else if (Val=='5'){
+          if(inputazi<221||inputazi>251){
+            alert("범위에 벗어나는 값을 입력하셨습니다");
+            $('.inputazi').val("");
+          }
+          else if(inputdown<0||inputdown>10){
+            alert("범위에 벗어나는 값을 입력하셨습니다");
+            $('.inputdown').val("");
+          }
+        }
+        else if (Val=='6'){
+          if(inputazi<146||inputazi>176){
+            alert("범위에 벗어나는 값을 입력하셨습니다");
+            $('.inputazi').val("");
+          }
+          else if(inputdown<4||inputdown>16){
+            alert("범위에 벗어나는 값을 입력하셨습니다");
+            $('.inputdown').val("");
+          }
+        }
+        else if (Val=='7'){
+          if(inputazi<330||inputazi>360){
+            alert("범위에 벗어나는 값을 입력하셨습니다");
+            $('.inputazi').val("");
+          }
+          else if(inputdown<11||inputdown>23){
+            alert("범위에 벗어나는 값을 입력하셨습니다");
+            $('.inputdown').val("");
+          }
+        }
+      })
+    })
+
+
+    function selectchange(event){
+
+      var azi=document.getElementById("disazi");
+      var down=document.getElementById("disdown");
+      var Val=Sel.options[Sel.selectedIndex].value;
+
+      if (Val=='1'){
+        azi.innerHTML="161~191";
+        down.innerHTML="11~23";
+      }
+      else if (Val=='2'){
+        azi.innerHTML="60~90";
+        down.innerHTML="10~22";
+      }
+      else if (Val=='3'){
+        azi.innerHTML="198~228";
+        down.innerHTML="10~22";
+      }
+      else if (Val=='4'){
+        azi.innerHTML="103~133";
+        down.innerHTML="12~24";
+      }
+      else if (Val=="5"){
+        azi.innerHTML="221~251";
+        down.innerHTML="0~10";
+      }
+      else if (Val=="6"){
+        azi.innerHTML="146~176";
+        down.innerHTML="4~16";
+      }
+      else if (Val=="7"){
+        azi.innerHTML="330~360";
+        down.innerHTML="11~23";
+      }
+    }
+    Sel.addEventListener("change",selectchange);
+
+</script>
+</body>
+</html>
